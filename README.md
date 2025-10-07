@@ -1,6 +1,6 @@
 # Oh-My-Git - OMG
 
-A basic repositoy manager for selfcompiled software on linux desktops.
+A Git repository manager.
 
 # Usage
 
