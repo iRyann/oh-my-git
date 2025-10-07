@@ -27,3 +27,14 @@ omg
 - commit repos
 
 le + adapté le CLI TUI
+
+---
+
+- src
+  - core
+    - tui
+    - operations
+  - pkg
+    - core-pkg
+      - clone.py
+    - example.py
