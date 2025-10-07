@@ -1,18 +1,13 @@
-# Oh-My-Git - OMG
+![logo](public/logo.png)
 
-A Git repository manager.
+---
 
-# Usage
+> A supercharged git repository manager.
 
-```bash
-omg
-```
-
-## Fonctionnalités
+# Fonctionnalités
 
 - cloner un repo
 - lister les repos sur la machine
-
 - trier les repos
 - taguer les repos
   - comportement spécifique
@@ -25,5 +20,3 @@ omg
 - mettre à jour un repos (tirer une releaser si dispo)
 - cd repos
 - commit repos
-
-le + adapté le CLI TUI
