@@ -21,7 +21,7 @@ def entrypoint(argv : List[str])->None:
     parser.add_argument("start_paths",
                         help="choose the starting paths of the research",
                         nargs="*",type=str,
-                        default=["/home/"])
+                        default=["."])
 
     # parse argv
     args = parser.parse_args(argv)
@@ -33,7 +33,7 @@ def entrypoint(argv : List[str])->None:
     try:
         pipe = os.popen(f'find {" ".join(args.start_paths)} | grep /.git$',"r")
         found_repositories = pipe._stream.read().split("\n")[:-1]
-        found_repositories = [os.path.split(found_repository)[0] for found_repository in found_repositories]
+        found_repositories = [os.path.realpath(os.path.split(found_repository)[0]) for found_repository in found_repositories]
         error_code = pipe.close()
     except:
         LOG_ERROR("An error occured while requesting the system to search for the repositories\nMake sure you have find and grep installed on your system")
@@ -71,6 +71,6 @@ def entrypoint(argv : List[str])->None:
     new_repositories_display = [f"{data[0]} as {green(data[1])}" for data in zip(new_repositories_path,new_aliases)]
 
     print("\n".join(set(repositories_path)))
-    print(green("+ ") + f'\n{green("+")} '.join(new_repositories_display) + "\n")
+    print(green("+ ")*(new_repositories_path != []) + f'\n{green("+")} '.join(new_repositories_display) + "\n")
 
     LOG(f'Found {len(found_repositories)} {"repositories" if len(found_repositories) > 1 else "repository"} including {green(str(len(new_repositories_path)) + " new")} {"repositories" if len(new_repositories_path) > 1 else "repository"}')
