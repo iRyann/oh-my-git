@@ -9,6 +9,23 @@ from core.repositories import check_repository
 from core.tui.components import LOG_ERROR
 
 
+def check_args(args: argparse.Namespace) -> bool:
+    repository_proxy = (
+        args.alias
+        if args.alias != None
+        else args.path if args.path != None else getcwd()
+    )
+    if check_repository(repository_proxy):
+        return True
+    else:
+        raise RepositoryNotFoundException()
+
+
+def execute(cmd: str) -> None:
+    error_code, _ = exec(f"{cmd}")
+    exit(error_code != None)
+
+
 def entrypoint(argv: List[str]) -> None:
     # init parser
     parser = argparse.ArgumentParser(
@@ -45,22 +62,6 @@ def entrypoint(argv: List[str]) -> None:
     try:
         check_args(args)
         execute(args.command)
-    except Exception :
+    except Exception:
         LOG_ERROR("Repository not found")
         exit(1)
-
-def check_args(args: argparse.Namespace) -> bool:
-    repository_proxy = (
-        args.alias
-        if args.alias != None
-        else args.path if args.path != None else getcwd()
-    )
-    if check_repository(repository_proxy):
-        return True
-    else:
-        raise RepositoryNotFoundException()
-
-
-def execute(cmd: str) -> None:
-    error_code, _ = exec(f"{cmd}")
-    exit(error_code != None)
