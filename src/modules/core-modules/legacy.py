@@ -3,8 +3,27 @@ from os import getcwd
 from sys import exit
 from typing import List
 
+from core.exceptions import RepositoryNotFoundException
 from core.git import exec
 from core.repositories import check_repository
+from core.tui.components import LOG_ERROR
+
+
+def check_args(args: argparse.Namespace) -> bool:
+    repository_proxy = (
+        args.alias
+        if args.alias != None
+        else args.path if args.path != None else getcwd()
+    )
+    if check_repository(repository_proxy):
+        return True
+    else:
+        raise RepositoryNotFoundException(repository_proxy)
+
+
+def execute(cmd: str) -> None:
+    error_code, _ = exec(f"{cmd}")
+    exit(error_code != None)
 
 
 def entrypoint(argv: List[str]) -> None:
@@ -40,20 +59,9 @@ def entrypoint(argv: List[str]) -> None:
     )
 
     args = parser.parse_args(argv)
-    proceed = check_args(args.Namespace)
-    if proceed:
+    try:
+        check_args(args)
         execute(args.command)
-
-
-def check_args(args: argparse.Namespace) -> bool:
-    repository_proxy = (
-        args.alias
-        if args.alias != None
-        else args.path if args.path != None else getcwd()
-    )
-    return check_repository(repository_proxy)
-
-
-def execute(cmd: str) -> None:
-    error_code, _ = core.git.exec(f"{cmd}")
-    sys.exit(error_code != None)
+    except RepositoryNotFoundException as e:
+        LOG_ERROR("The repository identified by " + e.args[0] + " is not found.")
+        exit(1)
