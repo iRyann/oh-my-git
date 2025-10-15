@@ -18,7 +18,7 @@ def check_args(args: argparse.Namespace) -> bool:
     if check_repository(repository_proxy):
         return True
     else:
-        raise RepositoryNotFoundException()
+        raise RepositoryNotFoundException(repository_proxy)
 
 
 def execute(cmd: str) -> None:
@@ -62,6 +62,6 @@ def entrypoint(argv: List[str]) -> None:
     try:
         check_args(args)
         execute(args.command)
-    except Exception:
-        LOG_ERROR("Repository not found")
+    except RepositoryNotFoundException as e:
+        LOG_ERROR("The repository identified by " + e.args[0] + " is not found.")
         exit(1)

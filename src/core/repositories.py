@@ -32,7 +32,9 @@ def check_repository(repository_proxy: str) -> bool:
     if repository_proxy in REPOSITORIES.keys():
         return os.path.exists(REPOSITORIES[repository_proxy]["path"])
     else:
-        return repository_proxy in [v["path"] for v in REPOSITORIES.values()]
+        return repository_proxy in [
+            repository_data["path"] for repository_data in REPOSITORIES.values()
+        ]
 
 
 # remove repositories that are no longer on the disk from the register
