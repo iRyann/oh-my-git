@@ -17,6 +17,9 @@ def entrypoint(argv : List[str])->None:
 
     # add arguments
     parser.add_argument("-l","--inline",help="display the repositories inline, with minimal informations",action="store_true")
+    parser.add_argument("-n","--name",help="filters the repositories by name",type=str)
+    parser.add_argument("-p","--path",help="filters the repositories by path",type=str)
+    parser.add_argument("-a","--author",help="filters the repositories by author",type=str)
     parser.add_argument("-t","--tags",help="filters the repositories by tags",nargs="*",type=str)
 
     # parse argv
@@ -28,6 +31,15 @@ def entrypoint(argv : List[str])->None:
 
     if args.tags:
         repositories_names = [repository_name for repository_name in repositories_names if repositories[repository_name]["tags"] and args.tags in repositories[repository_name]["tags"]]
+
+    if args.author:
+        repositories_names = [repository_name for repository_name in repositories_names if args.author in repositories[repository_name]["author"]]
+
+    if args.name:
+        repositories_names = [repository_name for repository_name in repositories_names if args.name in repository_name]
+
+    if args.path:
+        repositories_names = [repository_name for repository_name in repositories_names if args.path in repositories[repository_name]["path"]]
 
     # init buffer
     buffer = ""

@@ -18,7 +18,7 @@ def exec(command: str, repository_path: str = None, capture: bool = False)->Tupl
     return return_code,buffer
 
 def get_author(repository_path: str)->str:
-    return_code, author = exec("show | grep Author",repository_path,True)
+    return_code, author = exec("log --reverse | grep Author",repository_path,True)
     author = author.split(": ")[1].split(" <")[0]
     return author
 
