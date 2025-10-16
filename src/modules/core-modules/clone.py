@@ -10,6 +10,7 @@ import core.repositories
 from typing import List
 import core.git
 import argparse
+import os.path
 import sys
 
 def entrypoint(argv : List[str])->None:
@@ -60,7 +61,7 @@ def entrypoint(argv : List[str])->None:
     core.repositories.add_repository(args.alias,{
         "author": author,
         "origin": args.remote_url,
-        "path" : args.path,
+        "path" : os.path.realpath(args.path),
         "tags" : args.tags
     })
     
