@@ -1,3 +1,8 @@
+from core.exceptions import (RepositoryAlreadyExistsException, 
+                            RepositoryDoesNotExistsException,
+                            InvalidRepositoryDataStructureException,
+                            SystemCallErrorException)
+from typing import List
 import json
 import os
 
@@ -18,10 +23,9 @@ if not os.path.isfile(REPOSITORIES_REGISTER_PATH):
     open(REPOSITORIES_REGISTER_PATH, "a").close()
 
 # opening the file only once
-REPOSITORIES_REGISTER_FILE = open(REPOSITORIES_REGISTER_PATH, "r+")
-
-# parsing the json, creating the dict only once
-raw_json = REPOSITORIES_REGISTER_FILE.read()
+with open(REPOSITORIES_REGISTER_PATH,"r") as REPOSITORIES_REGISTER_FILE: 
+    # parsing the json, creating the dict only once
+    raw_json = REPOSITORIES_REGISTER_FILE.read()
 try:
     REPOSITORIES = json.loads(raw_json)
 except:  # avoid crashing when the json is empty or wrong
@@ -78,11 +82,30 @@ def get_repository(repository_name: str) -> dict:
 def get_repositories() -> dict:
     return REPOSITORIES
 
+def forget_repositories(repositories_names: List[str]) -> None:
+    if not (set(repositories_names) <= set(REPOSITORIES.keys())):
+        raise RepositoryDoesNotExistsException(repositories_names)
+    else:
+        for repository_name in repositories_names:
+            del REPOSITORIES[repository_name]
+
+def remove_repositories(repositories_names: List[str]) -> None:
+    if not (set(repositories_names) <= set(REPOSITORIES.keys())):
+        raise RepositoryDoesNotExistsException(repositories_names)
+    else:
+        for repository_name in repositories_names:
+            try:
+                error_code = os.popen(f'rm -Rf {REPOSITORIES[repository_name]["path"]}',"r").close()
+                if error_code != None:
+                    raise SystemCallErrorException(f"removal of {repository_name}")
+            except exception:
+                raise exception
+    
 
 # save the REPOSITORIES object state to the repository.json file
-def save_repositories() -> dict:
-    REPOSITORIES_REGISTER_FILE.seek(0)
-    REPOSITORIES_REGISTER_FILE.write(json.dumps(REPOSITORIES, sort_keys=True))
+def save_repositories()->dict:
+    with open(REPOSITORIES_REGISTER_PATH,"w") as REPOSITORIES_REGISTER_FILE:
+        REPOSITORIES_REGISTER_FILE.write(json.dumps(REPOSITORIES,sort_keys=True))
     return REPOSITORIES
 
 
