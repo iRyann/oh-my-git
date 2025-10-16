@@ -9,3 +9,9 @@ class RepositoryAlreadyExistsException(Exception):
 
 class InvalidRepositoryDataStructureException(Exception):
     pass
+
+class RepositoryDoesNotExistsException(Exception):
+    pass
+
+class SystemCallErrorException(Exception):
+    pass
