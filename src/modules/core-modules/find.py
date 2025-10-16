@@ -36,7 +36,7 @@ def entrypoint(argv : List[str])->None:
         found_repositories = [os.path.realpath(os.path.split(found_repository)[0]) for found_repository in found_repositories]
         error_code = pipe.close()
     except:
-        LOG_ERROR("An error occured while requesting the system to search for the repositories\nMake sure you have find and grep installed on your system")
+        LOG_ERROR("An error occured while requesting the system to search for the repositories\nMake sure you have 'find' and 'grep' installed on your system")
         sys.exit(1)
 
     if error_code:
@@ -46,6 +46,7 @@ def entrypoint(argv : List[str])->None:
     repositories_names = list(repositories.keys())
     repositories_path = [repository["path"] for repository in repositories.values()]
     new_repositories_path = [repository_path for repository_path in found_repositories if repository_path not in repositories_path]
+    already_known_repositories_path = [repository_path for repository_path in found_repositories if repository_path not in new_repositories_path]
     new_aliases = [os.path.split(repository_path)[1] for repository_path in new_repositories_path]
     
     # check if the aliases are all available
@@ -70,7 +71,7 @@ def entrypoint(argv : List[str])->None:
 
     new_repositories_display = [f"{data[0]} as {green(data[1])}" for data in zip(new_repositories_path,new_aliases)]
 
-    print("\n".join(set(repositories_path)))
+    print("\n".join(already_known_repositories_path))
     print(green("+ ")*(new_repositories_path != []) + f'\n{green("+")} '.join(new_repositories_display) + "\n")
 
     LOG(f'Found {len(found_repositories)} {"repositories" if len(found_repositories) > 1 else "repository"} including {green(str(len(new_repositories_path)) + " new")} {"repositories" if len(new_repositories_path) > 1 else "repository"}')
