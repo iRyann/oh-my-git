@@ -1,7 +1,8 @@
 from core.tui.components import (
                                 LOG,
                                 LOG_ERROR,
-                                LOG_WARNING)
+                                LOG_WARNING,
+                                REPOSITORY_DOES_NOT_EXIST_MESSAGE)
 from core.tui.colors import blue,green,yellow,red
 import core.repositories
 from typing import List
@@ -39,7 +40,7 @@ def entrypoint(argv : List[str])->None:
         # filtering and checking if repository exists
         for repository_name in args.repositories_names:
             if not core.repositories.check_repository(repository_name):
-                LOG_ERROR(f"The repository '{repository_name}' does not exist")
+                LOG_ERROR(REPOSITORY_DOES_NOT_EXIST_MESSAGE(repository_name))
                 sys.exit(1)
             else:
                 repositories_names.append(repository_name)
