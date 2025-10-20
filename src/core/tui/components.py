@@ -13,7 +13,17 @@ def LOG_WARNING(message : str)->None:
 def LOG_ERROR(message : str)->None:
     LOG(message,red)
 
-def MODULE_NOT_FOUND_MESSAGE(module_name : str) -> str:    return f"'{module_name}' is not an {APP_NAME} command. See '{APP_NAME} --help'\n\nIt may be because the associated module can not be found."
+def LOG_DEV(message : str,color = blue)->None:
+    print(f'[{color(APP_NAME)}] <{color("DEV")}> : {message}')
+
+def LOG_DEV_WARNING(message : str) -> None:
+    LOG_DEV(message,yellow)
+
+def LOG_DEV_INFO(message : str) -> None:
+    LOG_DEV(message,green)
+
+def MODULE_NOT_FOUND_MESSAGE(module_name : str) -> str:
+    return f"'{module_name}' is not an {APP_NAME} command. See '{APP_NAME} --help'\n\nIt may be because the associated module can not be found."
 
 def MODULE_ENTRYPOINT_NOT_FOUND_MESSAGE(module_name : str) -> str:    return f"{APP_NAME}: the entrypoint of the module associated to '{module_name}' can not be found."
 
@@ -28,4 +38,4 @@ NEW_REPOSITORY_NAME_QUESTION_ALIAS = "Enter a new name for the repository : "
 def REPOSITORY_DOES_NOT_EXIST_MESSAGE(alias : str) -> str:
     return f"The repository '{alias}' does not exist."
 
-SYSTEM_CALL_ERROR_MESSAGE = "A system error occured."
+SYSTEM_CALL_ERROR_MESSAGE = "An error occured during a system call."

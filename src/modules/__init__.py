@@ -22,7 +22,7 @@ def call_module(module_name : str,argv : List[str])->None:
     if module_name in modules:
         module = importlib.import_module(module_name)
         if "entrypoint" in dir(module):
-            getattr(module,"entrypoint")(argv)
+            exceptions.safe_call(getattr(module,"entrypoint"),argv)
         else : raise exceptions.ModuleEntryPointNotFoundException(module_name)
     else:   raise exceptions.ModuleNotFoundException(module_name)
 

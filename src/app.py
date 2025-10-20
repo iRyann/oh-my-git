@@ -10,9 +10,11 @@ def main(argv : List[str])->None:
     else:
         try:
             call_module(argv[1],argv[2:])
+
         except exceptions.ModuleNotFoundException:
             LOG_ERROR(MODULE_NOT_FOUND_MESSAGE(argv[1]))
             sys.exit(1)
+            
         except exceptions.ModuleEntryPointNotFoundException:
             LOG_ERROR(MODULE_ENTRYPOINT_NOT_FOUND_MESSAGE(argv[1]))
             sys.exit(1)
