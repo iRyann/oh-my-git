@@ -33,12 +33,23 @@ except:  # avoid crashing when the json is empty or wrong
 
 
 def check_repository(repository_proxy: str) -> bool:
+    # check if repository_proxy is known, if yes retrieve path
     if repository_proxy in REPOSITORIES.keys():
-        return os.path.exists(REPOSITORIES[repository_proxy]["path"])
+        repository_path = REPOSITORIES[repository_proxy]["path"]
+    elif repository_proxy in [
+            repository_data["path"] 
+            for repository_data 
+            in REPOSITORIES.values()
+        ]:
+        repository_path = repository_proxy
     else:
-        return repository_proxy in [
-            repository_data["path"] for repository_data in REPOSITORIES.values()
-        ]
+        return ""
+
+    # return repository path if it still exists
+    if os.path.exists(repository_path):
+        return repository_path
+    else:
+        return ""
 
 
 # remove repositories that are no longer on the disk from the register
