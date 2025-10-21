@@ -1,69 +1,64 @@
 from typing import List
 from os import environ
 from sys import exit as sys_exit
-from core.tui.components import LOG_ERROR, LOG_WARNING, LOG_DEV_INFO, LOG_DEV_WARNING
+from core.tui.components import LOG_ERROR, LOG_WARNING, LOG_DEV_WARNING
 import core.tui.components
 from enum import Enum
 
-# log level defined in env variables
-LOG_LEVEL = environ["LOG_LEVEL"] if "LOG_LEVEL" in environ else 0
-
-# exception levels
-class ExceptionLevel(Enum):
+# exception types
+class ExceptionType(Enum):
     ERROR = 0
     WARNING = 1
-    DEV_WARNING = 2
-    DEV_INFO = 3
 
 # function allowing default exception handling
-def safe_call(function, args : List[any]) -> any:
-    try:
-        return function(args)
+def make_safe(function : callable, resolve : callable = None) -> callable:
+    def safe_function(*args : any):
+        try:
+            return function(*args)
 
-    except exception:
-        if hasattr(exception,"__omg_exception"):
-            if exception.error_level <= EX_WARNING or exception.error_level <= LOG_LEVEL:
-                match exception.error_level:
-                    case ExceptionLevel.ERROR:
-                        LOG_ERROR(exception)
-                        sys_exit(1)
+        except __OMG_Exception as exception:
+            match exception.exception_type:
+                case ExceptionType.ERROR:
+                    LOG_ERROR(exception)
 
-                    case ExceptionLevel.WARNING:
-                        LOG_WARNING(exception)
+                case ExceptionType.WARNING:
+                    LOG_WARNING(exception)
 
-                    case ExceptionLevel.DEV_WARNING:
-                        LOG_DEV_WARNING(exception)
+                case _:
+                    LOG_DEV_WARNING(exception)
+                    sys_exit(1)
+                
+            if exception.is_fatal:
+                sys_exit(1)
+            elif resolve != None:
+                return resolve(exception)
 
-                    case ExceptionLevel.DEV_INFO:
-                        LOG_DEV_INFO(exception)
-
-                    case _:
-                        LOG_ERROR(exception)
-                        sys_exit(1)
-
-        else:
+        except Exception as exception: 
             LOG_ERROR(f"The following error occured : {exception}")
             sys_exit(1)
 
+    return safe_function
+
 class __OMG_Exception(Exception):
-    def __init__(self : Exception, message : str,error_level : int = 0) -> Exception:
+    def __init__(self : Exception, message : str,exception_type : int = 0, is_fatal: bool = True) -> Exception:
         super().__init__(message)
         self.message = message
-        self.__omg_exception = True
-        self.error_level = error_level
+        self.exception_type = exception_type
+        self.is_fatal = is_fatal
 
     def __str__(self) -> str:
-        return message
+        return self.message
 
 class ModuleNotFoundException(__OMG_Exception):
     def __init__(self,module_name : str):
         super().__init__(core.tui.components.MODULE_NOT_FOUND_MESSAGE(module_name),
-                        ExceptionLevel.ERROR)
+                        ExceptionType.ERROR)
+        self.module_name = module_name
 
 class ModuleEntryPointNotFoundException(__OMG_Exception):
     def __init__(self,module_name : str):
         super().__init__(core.tui.components.MODULE_ENTRYPOINT_NOT_FOUND_MESSAGE(module_name),
-                        ExceptionLevel.ERROR)
+                        ExceptionType.ERROR)
 
 class RepositoryAlreadyExistsException(__OMG_Exception):
     pass
