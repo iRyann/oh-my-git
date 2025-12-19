@@ -57,7 +57,7 @@ def entrypoint(argv : List[str])->None:
         formatted_repositories_names = [(repository_name + " " * (4+max_len-len(repository_name))) for repository_name in repositories_names]
 
         number_of_records_per_line = terminal_width // (max_len+4)
-        number_of_lines = 1 + (len(formatted_repositories_names)*(max_len+4))//terminal_width
+        number_of_lines = 1 + len(formatted_repositories_names)//number_of_records_per_line
         for i in range(1,number_of_lines):
             formatted_repositories_names[i*number_of_records_per_line-1]+= "\n"
         buffer = "".join(formatted_repositories_names)
