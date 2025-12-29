@@ -6,6 +6,7 @@ from core.tui.components import (
 from core.tui.colors import blue,green,yellow,red
 import core.repositories
 from typing import List
+import core.config
 import argparse
 import sys
 import os
@@ -27,6 +28,9 @@ def entrypoint(argv : List[str])->None:
     repositories = core.repositories.get_repositories()
     repositories_names = list(repositories.keys())
 
+    # fetch config
+    prefered_shell = core.config.get_config("prefered-shell")
+
     if args.repository_alias in repositories_names:
         os.chdir(repositories[args.repository_alias]["path"])
-        os.system("/bin/bash")
+        os.system(prefered_shell)
