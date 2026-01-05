@@ -1,9 +1,5 @@
-from core.tui.components import (
-                                LOG,
-                                LOG_ERROR,
-                                LOG_WARNING,
-                                REPOSITORY_DOES_NOT_EXIST_MESSAGE)
-from core.tui.colors import blue,green,yellow,red
+from core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE
+from core.exceptions import RepositoryDoesNotExistsException
 import core.repositories
 from typing import List
 import core.config
@@ -23,14 +19,12 @@ def entrypoint(argv : List[str])->None:
 
     # parse argv
     args = parser.parse_args(argv)
-    
-    # fetch repositories data
-    repositories = core.repositories.get_repositories()
-    repositories_names = list(repositories.keys())
 
     # fetch config
     prefered_shell = core.config.get_config("prefered-shell")
 
-    if args.repository_alias in repositories_names:
-        os.chdir(repositories[args.repository_alias]["path"])
+    if core.repositories.check_repository(args.repository_alias):
+        os.chdir(core.repositories.get_repository(args.repository_alias)["path"])
         os.system(prefered_shell)
+    else:
+        raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(args.repository_alias))
