@@ -6,9 +6,6 @@ from typing import List
 import json
 import os
 
-from core.exceptions import (InvalidRepositoryDataStructureException,
-                             RepositoryAlreadyExistsException)
-
 REPOSITORIY_DATA_FIELDS = ["author", "path", "origin", "tags"]
 
 OMG_DATA_PATH = os.path.join(os.path.expanduser("~"), ".omg")
