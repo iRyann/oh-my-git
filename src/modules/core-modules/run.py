@@ -4,7 +4,7 @@ from core.tui.components import (
                                 LOG_WARNING,
                                 REPOSITORY_DOES_NOT_EXIST_MESSAGE)
 from core.tui.colors import blue,green,yellow,red
-from core.exceptions import RepositoryDoesNotExistsException
+from core.exceptions import RepositoryDoesNotExistsException,__OMG_Exception
 import core.repositories
 from typing import List
 import core.config
@@ -46,11 +46,10 @@ def entrypoint(argv : List[str])->None:
                     os.system(command)
 
                 else:
-                    LOG_ERROR(f"There are no script named '{args.script}' available for the repository '{args.repository_alias}'")
-                    exit(1)                    
+                    raise __OMG_Exception(f"There are no script named '{args.script}' available for the repository '{args.repository_alias}'")
                     
         else:
-            LOG_ERROR(f"There are no scripts available for the repository '{args.repository_alias}'")
-            exit(1)
+            raise __OMG_Exception(f"There are no scripts available for the repository '{args.repository_alias}'")
+
     else:
         raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(args.repository_alias))
