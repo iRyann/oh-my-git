@@ -4,7 +4,8 @@ import json
 import os
 
 DEFAUT_CONFIG = {
-    "prefered-shell":"/bin/bash"
+    "prefered-shell":"/bin/bash",
+    "prefered-editor": "vim"
 }
 
 OMG_DATA_PATH = os.path.join(os.path.expanduser("~"), ".omg")
