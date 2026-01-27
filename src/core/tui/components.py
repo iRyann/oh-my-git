@@ -38,4 +38,7 @@ NEW_REPOSITORY_NAME_QUESTION_ALIAS = "Enter a new name for the repository : "
 def REPOSITORY_DOES_NOT_EXIST_MESSAGE(alias : str) -> str:
     return f"The repository '{alias}' does not exist."
 
+def REPOSITORY_PULL_MESSAGE(alias: str, origin : str) -> str:
+    return f"pulling from origin {origin} into the repository {blue(alias)}."
+
 SYSTEM_CALL_ERROR_MESSAGE = "An error occured during a system call."
