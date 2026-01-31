@@ -13,7 +13,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-rm',
+                        prog='omg rm',
                         description='omg rm allows you to remove repositories registered in omg.\
                                     By default, repositories are only removed from the omg resister',
                         epilog="See 'omg --help' to get further help")

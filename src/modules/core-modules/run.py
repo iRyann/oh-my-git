@@ -16,7 +16,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-run',
+                        prog='omg run',
                         description="omg run allows you to run scripts in a repository.",
                         epilog="See 'omg --help' to get further help")
 

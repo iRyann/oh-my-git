@@ -11,7 +11,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-list',
+                        prog='omg list',
                         description='omg list allows you to list all the repositories registered in omg',
                         epilog="See 'omg --help' to get further help")
 

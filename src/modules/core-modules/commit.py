@@ -15,7 +15,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-commit',
+                        prog='omg commit',
                         description='omg commit allows you to commit changes to a repository referenced by its alias.',
                         epilog="See 'omg --help' to get further help")
 

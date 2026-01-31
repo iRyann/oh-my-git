@@ -10,7 +10,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-cd',
+                        prog='omg edit',
                         description="omg rm allows you to open a new shell session which the current working directory is set to the root of a specific git repository.",
                         epilog="See 'omg --help' to get further help")
 
