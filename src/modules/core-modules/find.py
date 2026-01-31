@@ -13,7 +13,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-find',
+                        prog='omg find',
                         description='omg list allows you to find repositories on your system',
                         epilog="See 'omg --help' to get further help")
 

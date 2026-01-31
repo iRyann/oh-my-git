@@ -13,7 +13,7 @@ import os
 def entrypoint(argv : List[str])->None:
     # init parser
     parser = argparse.ArgumentParser(
-                        prog='omg-pull',
+                        prog='omg pull',
                         description='omg to pull changes, for a specific set of repositories, from their respective origins',
                         epilog="See 'omg --help' to get further help")
 
