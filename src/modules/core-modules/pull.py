@@ -1,14 +1,14 @@
 from core.tui.components import (REPOSITORY_DOES_NOT_EXIST_MESSAGE,
                                  REPOSITORY_PULL_MESSAGE,
                                  LOG)
-from core.exceptions import RepositoryDoesNotExistsException
-import core.repositories
+from core.exceptions import (RepositoryDoesNotExistsException,
+                             PathDoesNotExistException)
+from core.repositories import get_repositories, get_repository, check_repository
 from typing import List
 import core.git
 import argparse
 import sys
 import os
-
 
 def entrypoint(argv : List[str])->None:
     # init parser
@@ -53,24 +53,41 @@ def entrypoint(argv : List[str])->None:
 
     # parse argv
     args = parser.parse_args(argv)
+    repositories_to_pull = []
 
     # all mode
     if args.all:
         if args.tags or args.path or args.repositories_aliases:
-            pass # logerror
+            pass # log incompatible arguments error
         else:
-            pass # all
+            repositories_to_pull = core.repositories.get_repositories()
 
     # filter mode
+    repositories_to_pull = core.repositories.get_repositories()
+
+    if args.path:
+        args.path = os.path.abspath(args.path)
+
+        if not os.path.exists(args.path):
+            raise PathDoesNotExistException(args.path)
+
+        repositories_to_pull = [repositiory_alias for repositiory_alias in repositories_to_pull if args.path in get_repository(repositiory_alias)["path"]]
+
+    if args.tags:
+        repositories_to_pull = [repository_alias for repository_alias in repositories_to_pull if get_repository(repository_alias)["tags"] and args.tags in get_repository(repository_alias)["tags"]]
+
 
     # alias mode
+    if args.repositories_aliases:
+        for repository_alias in args.repositories_aliases:
+            if not core.repositories.check_repository(repository_alias):
+                raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(repository_alias))
 
-    for repository_alias in args.repositories_aliases:
-        if not core.repositories.check_repository(repository_alias):
-            raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(repository_alias))
-    
-    for repository_alias in args.repositories_aliases:
-        repository = core.repositories.get_repository(repository_alias)
+        repositories_to_pull = args.repositories_aliases
+
+    # actual pulling
+    for repository_alias in repositories_to_pull:
+        repository = get_repository(repository_alias)
 
         core.tui.components.LOG(REPOSITORY_PULL_MESSAGE(repository_alias,repository["origin"]))
         core.git.exec("pull",repository["path"])

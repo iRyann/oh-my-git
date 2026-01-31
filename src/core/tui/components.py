@@ -42,3 +42,6 @@ def REPOSITORY_PULL_MESSAGE(alias: str, origin : str) -> str:
     return f"pulling from origin {origin} into the repository {blue(alias)}."
 
 SYSTEM_CALL_ERROR_MESSAGE = "An error occured during a system call."
+
+def PATH_DOES_NOT_EXIST_MESSAGE(path : str) -> str:
+    return f"The following path does not exist : {path}"

@@ -74,3 +74,8 @@ class SystemCallErrorException(__OMG_Exception):
 
 class RepositoryNotFoundException(__OMG_Exception):
     pass
+
+class PathDoesNotExistException(__OMG_Exception):
+    def __init__(self,path : str):
+        super().__init__(core.tui.components.PATH_DOES_NOT_EXIST_MESSAGE(path),
+                        ExceptionType.ERROR)
