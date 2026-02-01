@@ -12,7 +12,7 @@ def entrypoint(argv : List[str])->None:
 
     # add arguments
     parser.add_argument("modules",
-                        help="choose the starting paths of the research",
+                        help="select target modules",
                         nargs="*",
                         type=str,
                         default=None)
