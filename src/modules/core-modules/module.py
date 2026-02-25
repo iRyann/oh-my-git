@@ -42,7 +42,7 @@ def entrypoint(argv : List[str])->None:
     
     group.add_argument("-i","--info",
                         help="check informations about target modules",
-                        type=str,
+                        action="store_true",
                         default=None)
 
 
@@ -73,4 +73,5 @@ def entrypoint(argv : List[str])->None:
                 raise ModuleNotFoundException(module)
 
         for module in target_modules_list:
-            pass
+            if args.info:
+                print(module)
