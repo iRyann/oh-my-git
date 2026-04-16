@@ -22,12 +22,15 @@ def entrypoint(argv: List[str]) -> None:
         "--inline",
         help="display the repositories inline, with minimal informations",
         action="store_true",
+        default=[],
     )
     parser.add_argument(
-        "-n", "--names", help="filters the repositories by name", nargs="*", type=str
-    )
-    parser.add_argument(
-        "-p", "--paths", help="filters the repositories by path", nargs="*", type=str
+        "-p",
+        "--paths",
+        help="filters the repositories by path",
+        nargs="*",
+        type=str,
+        default=[],
     )
     parser.add_argument(
         "-a",
@@ -35,36 +38,34 @@ def entrypoint(argv: List[str]) -> None:
         help="filters the repositories by author",
         nargs="*",
         type=str,
+        default=[],
     )
     parser.add_argument(
-        "-t", "--tags", help="filters the repositories by tags", nargs="*", type=str
+        "-t",
+        "--tags",
+        help="filters the repositories by tags",
+        nargs="*",
+        type=str,
+        default=[],
     )
     parser.add_argument(
         "-o",
         "--origins",
-        help="filters the repositories by origin",
+        help="filters the repositories by origins",
         nargs="*",
         type=str,
+        default=[],
     )
 
     # parse argv
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # fetch repositories data
-    repositories = core.repositories.get_repositories()
+    repositories = core.repositories.get_repositories_filtered(
+        args.authors, args.paths, args.origins, args.tags
+    )
+    repositories_names = list(repositories.keys())
 
-    if (
-        args.names is None
-        and args.authors is None
-        and args.origin is None
-        and args.tags is None
-        and args.paths is None
-    ):
-        repositories_names = list(repositories.keys())
-    else:
-        repositories_names = get_repositories_filtered(
-            args.names, args.authors, args.paths, args.origins, args.tags
-        )
     # init buffer
     buffer = ""
 

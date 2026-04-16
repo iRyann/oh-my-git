@@ -121,19 +121,15 @@ def save_repositories() -> dict:
 
 
 def get_repositories_filtered(
-    names: List[str],
-    authors: List[str],
-    paths: List[str],
-    origins: List,
-    tags: List[str],
+    authors: List[str], paths: List[str], origins: List, tags: List[str]
 ) -> Dict[str, Any]:
     """Filter repositories
 
-    Get repositories that matches
+    Get repositories that matches 
 
     Args:
         authors: repositories authors
-        paths: repositories paths
+        paths: repositories paths 
         origins: repositories origins
         tags: repositories tags
 
@@ -142,19 +138,17 @@ def get_repositories_filtered(
     """
     repositories = get_repositories()
 
-    names_set: Set[str] = set(names if names is not None else [])
     authors_set: Set[str] = set(authors if authors is not None else [])
     tags_set: Set[str] = set(tags if tags is not None else [])
     paths_set: Set[str] = set(paths if paths is not None else [])
     origins_set: Set[str] = set(origins if origins is not None else [])
 
-    def matches(name: str, repo: dict) -> bool:
+    def matches(repo: dict) -> bool:
         repo_authors = set(repo.get("authors", []))
         repo_tags = set(repo.get("tags", []))
         repo_path = repo.get("path")
         repo_origin = repo.get("origin")
-        if names_set and name not in names_set:
-            return False
+
         if authors_set and repo_authors.isdisjoint(authors_set):
             return False
         if tags_set and repo_tags.isdisjoint(tags_set):
@@ -165,7 +159,11 @@ def get_repositories_filtered(
             return False
         return True
 
-    return {name: repo for name, repo in repositories.items() if matches(name, repo)}
+    return {
+        name: repo
+        for name, repo in repositories.items()
+        if matches(repo)
+    }
 
 
 clean_repositories()
