@@ -62,7 +62,7 @@ def entrypoint(argv: List[str]) -> None:
     ):
         repositories_names = list(repositories.keys())
     else:
-        repositories_names = get_repositories_filtered(
+        repositories_names = core.repositories.get_repositories_filtered(
             args.names, args.authors, args.paths, args.origins, args.tags
         )
     # init buffer
