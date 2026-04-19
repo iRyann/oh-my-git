@@ -121,38 +121,49 @@ def save_repositories() -> dict:
 
 
 def get_repositories_filtered(
-    names: List[str],
-    authors: List[str],
-    paths: List[str],
-    origins: List[str],
-    tags: List[str],
-) -> List[str]:
+    authors: List[str], paths: List[str], origins: List, tags: List[str]
+) -> Dict[str, Any]:
+    """Filter repositories
+
+    Get repositories that matches 
+
+    Args:
+        authors: repositories authors
+        paths: repositories paths 
+        origins: repositories origins
+        tags: repositories tags
+
+    Returns:
+        Repositories verifying data criteria
+    """
     repositories = get_repositories()
-    names_set = set(names or [])
-    authors_set = set(authors or [])
-    tags_set = set(tags or [])
-    paths_set = set(paths or [])
-    origins_set = set(origins or [])
 
-    def matches(name: str, repo: dict) -> bool:
-        repo_author = repo.get("author", "")
-        repo_tags = set(repo.get("tags") or [])
-        repo_path = repo.get("path", "")
-        repo_origin = repo.get("origin", "")
+    authors_set: Set[str] = set(authors if authors is not None else [])
+    tags_set: Set[str] = set(tags if tags is not None else [])
+    paths_set: Set[str] = set(paths if paths is not None else [])
+    origins_set: Set[str] = set(origins if origins is not None else [])
 
-        if names_set and not any(n in name for n in names_set):
-            return False
-        if authors_set and not any(a in repo_author for a in authors_set):
+    def matches(repo: dict) -> bool:
+        repo_authors = set(repo.get("authors", []))
+        repo_tags = set(repo.get("tags", []))
+        repo_path = repo.get("path")
+        repo_origin = repo.get("origin")
+
+        if authors_set and repo_authors.isdisjoint(authors_set):
             return False
         if tags_set and repo_tags.isdisjoint(tags_set):
             return False
-        if paths_set and not any(p in repo_path for p in paths_set):
+        if paths_set and repo_path not in paths_set:
             return False
-        if origins_set and not any(o in repo_origin for o in origins_set):
+        if origins_set and repo_origin not in origins_set:
             return False
         return True
 
-    return [name for name, repo in repositories.items() if matches(name, repo)]
+    return {
+        name: repo
+        for name, repo in repositories.items()
+        if matches(repo)
+    }
 
 
 clean_repositories()

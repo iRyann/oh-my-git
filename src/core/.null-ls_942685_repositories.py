@@ -1,11 +1,13 @@
 import json
 import os
-from typing import Any, Dict, List, Set
+import re
+from typing import Any, Dict, List
 
 from core.exceptions import (InvalidRepositoryDataStructureException,
                              RepositoryAlreadyExistsException,
                              RepositoryDoesNotExistsException,
                              SystemCallErrorException)
+from utils.set_utils import _intersection_is_empty  
 
 REPOSITORIY_DATA_FIELDS = ["author", "path", "origin", "tags"]
 
@@ -121,38 +123,9 @@ def save_repositories() -> dict:
 
 
 def get_repositories_filtered(
-    names: List[str],
-    authors: List[str],
-    paths: List[str],
-    origins: List[str],
-    tags: List[str],
-) -> List[str]:
+    authors: List[str], paths: List[str], origins: List, tags: List[str]
+) -> Dict[str, Any]:
     repositories = get_repositories()
-    names_set = set(names or [])
-    authors_set = set(authors or [])
-    tags_set = set(tags or [])
-    paths_set = set(paths or [])
-    origins_set = set(origins or [])
-
-    def matches(name: str, repo: dict) -> bool:
-        repo_author = repo.get("author", "")
-        repo_tags = set(repo.get("tags") or [])
-        repo_path = repo.get("path", "")
-        repo_origin = repo.get("origin", "")
-
-        if names_set and not any(n in name for n in names_set):
-            return False
-        if authors_set and not any(a in repo_author for a in authors_set):
-            return False
-        if tags_set and repo_tags.isdisjoint(tags_set):
-            return False
-        if paths_set and not any(p in repo_path for p in paths_set):
-            return False
-        if origins_set and not any(o in repo_origin for o in origins_set):
-            return False
-        return True
-
-    return [name for name, repo in repositories.items() if matches(name, repo)]
-
-
+    def matches( repo : dict) -> bool :
+        return _intersection_is_empty(repo["authors"], authors)
 clean_repositories()
