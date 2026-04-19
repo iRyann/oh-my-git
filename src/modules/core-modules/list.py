@@ -11,7 +11,7 @@ from core.tui.components import LOG, LOG_WARNING
 def entrypoint(argv: List[str]) -> None:
     # init parser
     parser = argparse.ArgumentParser(
-        prog="omg-list",
+        prog="omg list",
         description="omg list allows you to list all the repositories registered in omg",
         epilog="See 'omg --help' to get further help",
     )
@@ -48,15 +48,15 @@ def entrypoint(argv: List[str]) -> None:
     )
 
     # parse argv
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # fetch repositories data
     repositories = core.repositories.get_repositories()
-
+    repositories_names = []
     if (
         args.names is None
         and args.authors is None
-        and args.origin is None
+        and args.origins is None
         and args.tags is None
         and args.paths is None
     ):
