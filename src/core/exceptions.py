@@ -40,7 +40,7 @@ def make_safe(function : callable, resolve : callable = None) -> callable:
     return safe_function
 
 class __OMG_Exception(Exception):
-    def __init__(self : Exception, message : str,exception_type : int = 0, is_fatal: bool = True) -> Exception:
+    def __init__(self : Exception, message : str,exception_type = ExceptionType.ERROR, is_fatal: bool = True) -> Exception:
         super().__init__(message)
         self.message = message
         self.exception_type = exception_type
@@ -74,3 +74,8 @@ class SystemCallErrorException(__OMG_Exception):
 
 class RepositoryNotFoundException(__OMG_Exception):
     pass
+
+class PathDoesNotExistException(__OMG_Exception):
+    def __init__(self,path : str):
+        super().__init__(core.tui.components.PATH_DOES_NOT_EXIST_MESSAGE(path),
+                        ExceptionType.ERROR)

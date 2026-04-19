@@ -31,7 +31,7 @@ def execute(cmd: str,path : str) -> None:
 def entrypoint(argv: List[str]) -> None:
     # init parser
     parser = argparse.ArgumentParser(
-        prog="omg-legacy",
+        prog="omg legacy",
         description="omg legacy enables you to execute a git command on a certain repository",
         epilog="See 'omg --help' to get further help",
     )
