@@ -11,16 +11,9 @@ from core.tui.components import LOG, LOG_WARNING
 def entrypoint(argv: List[str]) -> None:
     # init parser
     parser = argparse.ArgumentParser(
-<<<<<<< HEAD
-        prog="omg list",
-        description="omg list allows you to list all the repositories registered in omg",
-        epilog="See 'omg --help' to get further help",
-    )
-=======
                         prog='omg list',
                         description='omg list allows you to list all the repositories registered in omg',
                         epilog="See 'omg --help' to get further help")
->>>>>>> main
 
     # add arguments
     parser.add_argument(
@@ -93,19 +86,10 @@ def entrypoint(argv: List[str]) -> None:
             for repository_name in repositories_names
         ]
 
-<<<<<<< HEAD
-        number_of_records_per_line = terminal_width // (max_len + 4)
-        number_of_lines = (
-            1 + (len(formatted_repositories_names) * (max_len + 4)) // terminal_width
-        )
-        for i in range(1, number_of_lines):
-            formatted_repositories_names[i * number_of_records_per_line - 1] += "\n"
-=======
         number_of_records_per_line = terminal_width // (max_len+4)
         number_of_lines = 1 + len(formatted_repositories_names)//number_of_records_per_line
         for i in range(1,number_of_lines):
             formatted_repositories_names[i*number_of_records_per_line-1]+= "\n"
->>>>>>> main
         buffer = "".join(formatted_repositories_names)
 
     print(buffer + "\n")
