@@ -7,7 +7,7 @@ from core.exceptions import (InvalidRepositoryDataStructureException,
                              RepositoryDoesNotExistsException,
                              SystemCallErrorException)
 
-REPOSITORIY_DATA_FIELDS = ["author", "path", "origin", "tags"]
+REPOSITORIY_DATA_FIELDS = ["author", "path", "origin", "tags","icons"]
 
 OMG_DATA_PATH = os.path.join(os.path.expanduser("~"), ".omg")
 REPOSITORIES_REGISTER_PATH = os.path.join(OMG_DATA_PATH, "repositories.json")

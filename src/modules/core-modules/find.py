@@ -62,7 +62,7 @@ def entrypoint(argv : List[str])->None:
             
     # actually registering the new repositories
     for i in range(len(new_repositories_path)):
-        repository_data = {"path" : new_repositories_path[i], "tags" : None}
+        repository_data = {"path" : new_repositories_path[i], "tags" : None, "icons": []}
         repository_data["author"] = core.git.get_author(new_repositories_path[i])
         repository_data["origin"] = core.git.get_origin(new_repositories_path[i])
         core.repositories.add_repository(new_aliases[i],repository_data)
