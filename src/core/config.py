@@ -5,7 +5,8 @@ import os
 
 DEFAUT_CONFIG = {
     "prefered-shell":"/bin/bash",
-    "prefered-editor": "vim"
+    "prefered-editor": "vim",
+    "prefered-web_browser": "google-chrome"
 }
 
 OMG_DATA_PATH = os.path.join(os.path.expanduser("~"), ".omg")
