@@ -94,7 +94,7 @@ def get_repository_from_proxy(repository_proxy: str) -> dict:
     else:
         return next(
             (repository for repository in REPOSITORIES.values() \
-            if repository["path"] in repository_path),
+            if f"{repository_path}{os.sep}".startswith(f'{repository["path"]}{os.sep}')),
             None)
 
 # retrive all repostories' data
