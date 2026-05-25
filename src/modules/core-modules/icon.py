@@ -27,7 +27,10 @@ def entrypoint(argv : List[str])->None:
 
     if repository:
         if args.add:
-            repository["icons"].append(args.add)
+            if len(args.add) == 1:
+                repository["icons"].append(args.add)
+            else:
+                LOG_ERROR(f"The input '{args.add}' is not a valid icon")
         if args.remove:
             if args.remove in repository["icons"]:
                 repository["icons"].remove(args.remove)
