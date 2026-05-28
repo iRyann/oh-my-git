@@ -75,14 +75,19 @@ def entrypoint(argv: List[str]) -> None:
                 if repositories[repository_name]["tags"] == None
                 else f'\n\ttags: {" ".join(repositories[repository_name]["tags"])}'
             )
-            buffer += f'{blue(repository_name)}\n\torigin: {repositories[repository_name]["origin"]}\n\tpath: {repositories[repository_name]["path"]}\n\tauthor: {repositories[repository_name]["author"]}{tags}\n'
+            icons = (
+                ""
+                if not len(repositories[repository_name]["icons"])
+                else f'\n\ticons: {" ".join(repositories[repository_name]["icons"])}'                
+            )
+            buffer += f'{blue(repository_name)}\n\torigin: {repositories[repository_name]["origin"]}\n\tpath: {repositories[repository_name]["path"]}\n\tauthor: {repositories[repository_name]["author"]}{icons}{tags}\n'
 
     # format output -> ls style
     elif len(repositories_names):
         terminal_width, _ = os.get_terminal_size()
-        max_len = max([len(repository_name) for repository_name in repositories_names])
+        max_len = max([(len(repository_name)+len(repositories[repository_name]["icons"])*2) for repository_name in repositories_names])
         formatted_repositories_names = [
-            (repository_name + " " * (4 + max_len - len(repository_name)))
+            (repository_name + " " + "".join(repositories[repository_name]["icons"]) + " " * (3 + max_len - len(repository_name) - len(repositories[repository_name]["icons"])*2))
             for repository_name in repositories_names
         ]
 

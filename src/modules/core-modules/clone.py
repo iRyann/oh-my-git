@@ -62,7 +62,8 @@ def entrypoint(argv : List[str])->None:
         "author": author,
         "origin": args.remote_url,
         "path" : os.path.realpath(args.path),
-        "tags" : args.tags
+        "tags" : args.tags,
+        "icons" : []
     })
     
     core.repositories.save_repositories()
