@@ -31,14 +31,14 @@ except:  # avoid crashing when the json is empty or wrong
 
 
 def check_repository(repository_proxy: str) -> bool:
+    repository_path = os.path.abspath(repository_proxy)
+
     # check if repository_proxy is known, if yes retrieve path
     if repository_proxy in REPOSITORIES.keys():
         repository_path = REPOSITORIES[repository_proxy]["path"]
-    elif repository_proxy in [
+    elif repository_path not in [
         repository_data["path"] for repository_data in REPOSITORIES.values()
     ]:
-        repository_path = repository_proxy
-    else:
         return ""
 
     # return repository path if it still exists
@@ -84,6 +84,18 @@ def update_repository(repository_name: str, repository_data_to_update: dict) -> 
 def get_repository(repository_name: str) -> dict:
     return REPOSITORIES[repository_name]
 
+# retrive a repository's data from its name/path
+def get_repository_from_proxy(repository_proxy: str) -> dict:
+    repository_path = os.path.abspath(repository_proxy)
+
+    # check if repository_proxy is known, if yes retrieve path
+    if repository_proxy in REPOSITORIES.keys():
+        return REPOSITORIES[repository_proxy]  
+    else:
+        return next(
+            (repository for repository in REPOSITORIES.values() \
+            if f"{repository_path}{os.sep}".startswith(f'{repository["path"]}{os.sep}')),
+            None)
 
 # retrive all repostories' data
 def get_repositories() -> dict:
