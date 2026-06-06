@@ -1,8 +1,8 @@
-from core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE,LOG_ERROR
-from core.exceptions import RepositoryDoesNotExistsException
-import core.repositories
+from omg.core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE,LOG_ERROR
+from omg.core.exceptions import RepositoryDoesNotExistsException
+import omg.core.repositories
 from typing import List
-import core.config
+import omg.core.config
 import argparse
 import sys
 import os
@@ -23,7 +23,7 @@ def entrypoint(argv : List[str])->None:
     args = parser.parse_args(argv)
 
     # fetch config
-    repository = core.repositories.get_repository_from_proxy(args.repository_proxy)
+    repository = omg.core.repositories.get_repository_from_proxy(args.repository_proxy)
 
     if repository:
         if args.add:
@@ -37,14 +37,14 @@ def entrypoint(argv : List[str])->None:
             else:
                 # looking for the repository alias
                 repository_name = next((repository_name
-                    for repository_name, repository_candidate in core.repositories.get_repositories().items()
+                    for repository_name, repository_candidate in omg.core.repositories.get_repositories().items()
                     if repository_candidate == repository)
                     , None)
 
                 LOG_ERROR(f"The icon '{args.remove}' is not one of the repository '{repository_name}'")
                 sys.exit(1)
 
-        core.repositories.save_repositories()
+        omg.core.repositories.save_repositories()
 
     else:
         raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(args.repository_proxy))

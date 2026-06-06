@@ -2,7 +2,7 @@ import json
 import os
 from typing import Any, Dict, List, Set
 
-from core.exceptions import (InvalidRepositoryDataStructureException,
+from omg.core.exceptions import (InvalidRepositoryDataStructureException,
                              RepositoryAlreadyExistsException,
                              RepositoryDoesNotExistsException,
                              SystemCallErrorException)

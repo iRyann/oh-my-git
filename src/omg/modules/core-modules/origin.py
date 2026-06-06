@@ -1,8 +1,8 @@
-from core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE
-from core.exceptions import RepositoryDoesNotExistsException
-import core.repositories
+from omg.core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE
+from omg.core.exceptions import RepositoryDoesNotExistsException
+import omg.core.repositories
 from typing import List
-import core.config
+import omg.core.config
 import argparse
 import sys
 import os
@@ -22,9 +22,9 @@ def entrypoint(argv : List[str])->None:
     args = parser.parse_args(argv)
 
     # fetch config
-    prefered_web_browser = core.config.get_config("prefered-web_browser")
+    prefered_web_browser = omg.core.config.get_config("prefered-web_browser")
     
-    repository = core.repositories.get_repository_from_proxy(args.repository_alias)
+    repository = omg.core.repositories.get_repository_from_proxy(args.repository_alias)
     if repository:
         origin = repository["origin"]
         if args.show:

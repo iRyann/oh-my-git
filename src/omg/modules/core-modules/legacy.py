@@ -3,10 +3,10 @@ from os import getcwd
 from sys import exit
 from typing import List
 
-from core.exceptions import RepositoryNotFoundException
-from core.git import exec
-from core.repositories import check_repository, get_repositories
-from core.tui.components import LOG_ERROR
+from omg.core.exceptions import RepositoryNotFoundException
+from omg.core.git import exec
+from omg.core.repositories import check_repository, get_repositories
+from omg.core.tui.components import LOG_ERROR
 
 
 def check_args(args: argparse.Namespace) -> str:

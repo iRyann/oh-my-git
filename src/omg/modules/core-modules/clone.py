@@ -1,14 +1,14 @@
-from core.tui.components import (
+from omg.core.tui.components import (
                                 LOG,
                                 LOG_WARNING,
                                 ADDING_REPO_TO_REGISTER_MESSAGE,
                                 REPOSITORY_NAME_ALREADY_EXISTS_MESSAGE,
                                 NEW_REPOSITORY_NAME_QUESTION_ALIAS,
                                 PROCEED_QUESTION_MESSAGE)
-from core.exceptions import RepositoryAlreadyExistsException
-import core.repositories
+from omg.core.exceptions import RepositoryAlreadyExistsException
+import omg.core.repositories
 from typing import List
-import core.git
+import omg.core.git
 import argparse
 import os.path
 import sys
@@ -34,21 +34,21 @@ def entrypoint(argv : List[str])->None:
     if not args.alias: args.alias = args.remote_url.split("/")[-1].replace(".git","")
     
     # checking if the alias is available, handling the case if not
-    proceed = core.repositories.check_repository(args.alias)
+    proceed = omg.core.repositories.check_repository(args.alias)
     while proceed:
         LOG_WARNING(REPOSITORY_NAME_ALREADY_EXISTS_MESSAGE(args.alias))
         try:
             proceed = input(PROCEED_QUESTION_MESSAGE) == "Y"
             if proceed:
                 args.alias = input(NEW_REPOSITORY_NAME_QUESTION_ALIAS)
-                proceed = core.repositories.check_repository(args.alias)
+                proceed = omg.core.repositories.check_repository(args.alias)
             else:
                 sys.exit(0)                
         except:
             sys.exit(1)
 
     # calling git to clone the repo
-    error_code,_ = core.git.exec(f"clone {args.remote_url} {args.path}")
+    error_code,_ = omg.core.git.exec(f"clone {args.remote_url} {args.path}")
 
     # exit with error 1 if popen.close() returns an error, (meaning 'git clone' failed)
     if(error_code != None): sys.exit(1)
@@ -56,9 +56,9 @@ def entrypoint(argv : List[str])->None:
     # adding the repos to the register
     LOG(ADDING_REPO_TO_REGISTER_MESSAGE(args.remote_url, args.alias,args.tags))
 
-    author = core.git.get_author(args.path)
+    author = omg.core.git.get_author(args.path)
     
-    core.repositories.add_repository(args.alias,{
+    omg.core.repositories.add_repository(args.alias,{
         "author": author,
         "origin": args.remote_url,
         "path" : os.path.realpath(args.path),
@@ -66,4 +66,4 @@ def entrypoint(argv : List[str])->None:
         "icons" : []
     })
     
-    core.repositories.save_repositories()
+    omg.core.repositories.save_repositories()

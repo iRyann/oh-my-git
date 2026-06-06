@@ -1,8 +1,8 @@
 from typing import List
 from os import environ
 from sys import exit as sys_exit
-from core.tui.components import LOG_ERROR, LOG_WARNING, LOG_DEV_WARNING
-import core.tui.components
+from omg.core.tui.components import LOG_ERROR, LOG_WARNING, LOG_DEV_WARNING
+import omg.core.tui.components
 from enum import Enum
 
 # exception types
@@ -51,13 +51,13 @@ class __OMG_Exception(Exception):
 
 class ModuleNotFoundException(__OMG_Exception):
     def __init__(self,module_name : str):
-        super().__init__(core.tui.components.MODULE_NOT_FOUND_MESSAGE(module_name),
+        super().__init__(omg.core.tui.components.MODULE_NOT_FOUND_MESSAGE(module_name),
                         ExceptionType.ERROR)
         self.module_name = module_name
 
 class ModuleEntryPointNotFoundException(__OMG_Exception):
     def __init__(self,module_name : str):
-        super().__init__(core.tui.components.MODULE_ENTRYPOINT_NOT_FOUND_MESSAGE(module_name),
+        super().__init__(omg.core.tui.components.MODULE_ENTRYPOINT_NOT_FOUND_MESSAGE(module_name),
                         ExceptionType.ERROR)
 
 class RepositoryAlreadyExistsException(__OMG_Exception):
@@ -77,5 +77,5 @@ class RepositoryNotFoundException(__OMG_Exception):
 
 class PathDoesNotExistException(__OMG_Exception):
     def __init__(self,path : str):
-        super().__init__(core.tui.components.PATH_DOES_NOT_EXIST_MESSAGE(path),
+        super().__init__(omg.core.tui.components.PATH_DOES_NOT_EXIST_MESSAGE(path),
                         ExceptionType.ERROR)

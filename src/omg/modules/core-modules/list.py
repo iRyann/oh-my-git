@@ -3,9 +3,9 @@ import os
 import sys
 from typing import List
 
-import core.repositories
-from core.tui.colors import blue, green, yellow
-from core.tui.components import LOG, LOG_WARNING
+import omg.core.repositories
+from omg.core.tui.colors import blue, green, yellow
+from omg.core.tui.components import LOG, LOG_WARNING
 
 
 def entrypoint(argv: List[str]) -> None:
@@ -50,7 +50,7 @@ def entrypoint(argv: List[str]) -> None:
     args = parser.parse_args(argv)
 
     # fetch repositories data
-    repositories = core.repositories.get_repositories()
+    repositories = omg.core.repositories.get_repositories()
     repositories_names = []
     if (
         args.names is None
@@ -61,7 +61,7 @@ def entrypoint(argv: List[str]) -> None:
     ):
         repositories_names = list(repositories.keys())
     else:
-        repositories_names = core.repositories.get_repositories_filtered(
+        repositories_names = omg.core.repositories.get_repositories_filtered(
             args.names, args.authors, args.paths, args.origins, args.tags
         )
     # init buffer

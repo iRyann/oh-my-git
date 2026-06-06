@@ -1,4 +1,4 @@
-from core.tui.colors import blue,green,yellow,red
+from omg.core.tui.colors import blue,green,yellow,red
 
 APP_NAME = "omg"
 

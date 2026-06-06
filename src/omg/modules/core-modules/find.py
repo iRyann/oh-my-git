@@ -1,11 +1,11 @@
-from core.tui.components import (
+from omg.core.tui.components import (
                                 LOG,
                                 LOG_WARNING,
                                 LOG_ERROR)
-from core.tui.colors import blue,green
-import core.repositories
+from omg.core.tui.colors import blue,green
+import omg.core.repositories
 from typing import List
-import core.git
+import omg.core.git
 import argparse
 import sys
 import os
@@ -27,7 +27,7 @@ def entrypoint(argv : List[str])->None:
     args = parser.parse_args(argv)
 
     # get repositories object
-    repositories = core.repositories.get_repositories()
+    repositories = omg.core.repositories.get_repositories()
 
     # search repositories
     try:
@@ -63,11 +63,11 @@ def entrypoint(argv : List[str])->None:
     # actually registering the new repositories
     for i in range(len(new_repositories_path)):
         repository_data = {"path" : new_repositories_path[i], "tags" : None, "icons": []}
-        repository_data["author"] = core.git.get_author(new_repositories_path[i])
-        repository_data["origin"] = core.git.get_origin(new_repositories_path[i])
-        core.repositories.add_repository(new_aliases[i],repository_data)
+        repository_data["author"] = omg.core.git.get_author(new_repositories_path[i])
+        repository_data["origin"] = omg.core.git.get_origin(new_repositories_path[i])
+        omg.core.repositories.add_repository(new_aliases[i],repository_data)
 
-    core.repositories.save_repositories()
+    omg.core.repositories.save_repositories()
 
     new_repositories_display = [f"{data[0]} as {green(data[1])}" for data in zip(new_repositories_path,new_aliases)]
 
