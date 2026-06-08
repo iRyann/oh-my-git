@@ -1,13 +1,13 @@
-from core.tui.components import (
+from omg.core.tui.components import (
                                 LOG,
                                 LOG_ERROR,
                                 LOG_WARNING,
                                 SYSTEM_CALL_ERROR_MESSAGE,
                                 REPOSITORY_DOES_NOT_EXIST_MESSAGE)
-from core.tui.colors import blue,green,yellow,red
-import core.repositories
+from omg.core.tui.colors import blue,green,yellow,red
+import omg.core.repositories
 from typing import List
-import core.git
+import omg.core.git
 import argparse
 import sys
 import os
@@ -35,11 +35,11 @@ def entrypoint(argv : List[str])->None:
     commit_commands = "commit " + " ".join(commit_commands)
 
     # fetching the repository's path
-    repository_path = core.repositories.check_repository(args.repository_alias)
+    repository_path = omg.core.repositories.check_repository(args.repository_alias)
 
     # actual git call
     if repository_path:
-        returned_code,_ = core.git.exec(commit_commands,repository_path)
+        returned_code,_ = omg.core.git.exec(commit_commands,repository_path)
     else:
         LOG_ERROR(REPOSITORY_DOES_NOT_EXIST_MESSAGE(args.repository_alias))
         sys.exit(1)

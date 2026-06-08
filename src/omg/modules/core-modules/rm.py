@@ -1,10 +1,10 @@
-from core.tui.components import (
+from omg.core.tui.components import (
                                 LOG,
                                 LOG_ERROR,
                                 LOG_WARNING,
                                 REPOSITORY_DOES_NOT_EXIST_MESSAGE)
-from core.tui.colors import blue,green,yellow,red
-import core.repositories
+from omg.core.tui.colors import blue,green,yellow,red
+import omg.core.repositories
 from typing import List
 import argparse
 import sys
@@ -29,7 +29,7 @@ def entrypoint(argv : List[str])->None:
     args = parser.parse_args(argv)
     
     # fetch repositories data
-    repositories = core.repositories.get_repositories()
+    repositories = omg.core.repositories.get_repositories()
     repositories_names = list(repositories.keys())
 
     # applying filters
@@ -39,7 +39,7 @@ def entrypoint(argv : List[str])->None:
 
         # filtering and checking if repository exists
         for repository_name in args.repositories_names:
-            if not core.repositories.check_repository(repository_name):
+            if not omg.core.repositories.check_repository(repository_name):
                 LOG_ERROR(REPOSITORY_DOES_NOT_EXIST_MESSAGE(repository_name))
                 sys.exit(1)
             else:
@@ -80,8 +80,8 @@ def entrypoint(argv : List[str])->None:
                 proceed = input("Do you want to proceed ? Y/n : ")
                 if proceed == "Y":
                     # actual removal from the file system
-                    core.repositories.remove_repositories(repositories_names)
-                    core.repositories.forget_repositories(repositories_names)
+                    omg.core.repositories.remove_repositories(repositories_names)
+                    omg.core.repositories.forget_repositories(repositories_names)
                 else:
                     sys.exit(0)
             except:
@@ -89,9 +89,9 @@ def entrypoint(argv : List[str])->None:
 
         # just forgetting about the repositories
         else:
-            core.repositories.forget_repositories(repositories_names)
+            omg.core.repositories.forget_repositories(repositories_names)
 
-        core.repositories.save_repositories()
+        omg.core.repositories.save_repositories()
         
         # final output
         print(removed_buffer)

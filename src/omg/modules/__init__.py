@@ -4,7 +4,7 @@ import sys
 from os.path import basename, dirname, isfile, join
 from typing import List
 
-import core.exceptions as exceptions
+import omg.core.exceptions as exceptions
 
 # updating the program's path
 sys.path.append(dirname(__file__))

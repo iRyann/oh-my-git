@@ -1,6 +1,6 @@
-from core.exceptions import ModuleNotFoundException
-from modules import call_module, list_modules
-from core.tui.colors import blue
+from omg.core.exceptions import ModuleNotFoundException
+from omg.modules import call_module, list_modules
+from omg.core.tui.colors import blue
 from typing import List
 import argparse
 

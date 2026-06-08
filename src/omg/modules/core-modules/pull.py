@@ -1,11 +1,11 @@
-from core.tui.components import (REPOSITORY_DOES_NOT_EXIST_MESSAGE,
+from omg.core.tui.components import (REPOSITORY_DOES_NOT_EXIST_MESSAGE,
                                  REPOSITORY_PULL_MESSAGE,
                                  LOG)
-from core.exceptions import (RepositoryDoesNotExistsException,
+from omg.core.exceptions import (RepositoryDoesNotExistsException,
                              PathDoesNotExistException)
-from core.repositories import get_repositories, get_repository, check_repository
+from omg.core.repositories import get_repositories, get_repository, check_repository
 from typing import List
-import core.git
+import omg.core.git
 import argparse
 import sys
 import os
@@ -60,10 +60,10 @@ def entrypoint(argv : List[str])->None:
         if args.tags or args.path or args.repositories_aliases:
             pass # log incompatible arguments error
         else:
-            repositories_to_pull = core.repositories.get_repositories()
+            repositories_to_pull = omg.core.repositories.get_repositories()
 
     # filter mode
-    repositories_to_pull = core.repositories.get_repositories()
+    repositories_to_pull = omg.core.repositories.get_repositories()
 
     if args.path:
         args.path = os.path.abspath(args.path)
@@ -80,7 +80,7 @@ def entrypoint(argv : List[str])->None:
     # alias mode
     if args.repositories_aliases:
         for repository_alias in args.repositories_aliases:
-            if not core.repositories.check_repository(repository_alias):
+            if not omg.core.repositories.check_repository(repository_alias):
                 raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(repository_alias))
 
         repositories_to_pull = args.repositories_aliases
@@ -89,6 +89,6 @@ def entrypoint(argv : List[str])->None:
     for repository_alias in repositories_to_pull:
         repository = get_repository(repository_alias)
 
-        core.tui.components.LOG(REPOSITORY_PULL_MESSAGE(repository_alias,repository["origin"]))
-        core.git.exec("pull",repository["path"])
+        omg.core.tui.components.LOG(REPOSITORY_PULL_MESSAGE(repository_alias,repository["origin"]))
+        omg.core.git.exec("pull",repository["path"])
         

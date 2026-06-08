@@ -1,4 +1,4 @@
-from core.exceptions import SystemCallErrorException
+from omg.core.exceptions import SystemCallErrorException
 from typing import List
 import json
 import os

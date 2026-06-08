@@ -1,8 +1,8 @@
-from core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE
-from core.exceptions import RepositoryDoesNotExistsException
-import core.repositories
+from omg.core.tui.components import REPOSITORY_DOES_NOT_EXIST_MESSAGE
+from omg.core.exceptions import RepositoryDoesNotExistsException
+import omg.core.repositories
 from typing import List
-import core.config
+import omg.core.config
 import argparse
 import sys
 import os
@@ -21,10 +21,10 @@ def entrypoint(argv : List[str])->None:
     args = parser.parse_args(argv)
 
     # fetch config
-    prefered_editor = core.config.get_config("prefered-editor")
+    prefered_editor = omg.core.config.get_config("prefered-editor")
 
-    if core.repositories.check_repository(args.repository_alias):
-        os.chdir(core.repositories.get_repository(args.repository_alias)["path"])
+    if omg.core.repositories.check_repository(args.repository_alias):
+        os.chdir(omg.core.repositories.get_repository(args.repository_alias)["path"])
         os.system(f"{prefered_editor} .")
     else:
         raise RepositoryDoesNotExistsException(REPOSITORY_DOES_NOT_EXIST_MESSAGE(args.repository_alias))

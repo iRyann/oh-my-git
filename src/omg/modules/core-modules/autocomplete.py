@@ -1,5 +1,5 @@
-import core.repositories
-from modules import list_modules
+import omg.core.repositories
+from omg.modules import list_modules
 from typing import List
 import argparse
 import sys
@@ -35,4 +35,4 @@ def entrypoint(argv : List[str])->None:
     if COMP_CWORD == 1:
         print(" ".join(list_modules()))
     else:
-        print(" ".join(core.repositories.get_repositories()))
+        print(" ".join(omg.core.repositories.get_repositories()))

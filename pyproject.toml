@@ -1,0 +1,7 @@
+[project]
+name = "omg"
+version = "0.1.0"
+dependencies = []
+
+[project.scripts]
+omg = "omg.cli:main"
