@@ -20,3 +20,5 @@
 - mettre à jour un repos (tirer une releaser si dispo)
 - cd repos
 - commit repos
+
+![Alt](https://repobeats.axiom.co/api/embed/e3eb5636dcedcb8bb775a54880ad2855b4f47e37.svg "Repobeats analytics image")
