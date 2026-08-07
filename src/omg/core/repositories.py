@@ -11,6 +11,7 @@ REPOSITORIY_DATA_FIELDS = ["author", "path", "origin", "tags","icons"]
 
 OMG_DATA_PATH = os.path.join(os.path.expanduser("~"), ".omg")
 REPOSITORIES_REGISTER_PATH = os.path.join(OMG_DATA_PATH, "repositories.json")
+GLOBAL_SCRIPTS_PATH = os.path.join(OMG_DATA_PATH, "scripts.json")
 
 # creating the ./omg directory if needed
 if not os.path.isdir(OMG_DATA_PATH):
@@ -168,3 +169,132 @@ def get_repositories_filtered(
 
 
 clean_repositories()
+
+
+# retrieve the list of script names available for a repository (local + global)
+def get_scripts(repository_name: str) -> List[str]:
+    scripts = {}
+
+    # global scripts
+    if os.path.isfile(GLOBAL_SCRIPTS_PATH):
+        try:
+            with open(GLOBAL_SCRIPTS_PATH, "r") as f:
+                scripts.update(json.loads(f.read()))
+        except Exception:
+            pass
+
+    # repository-local scripts
+    try:
+        repository = get_repository(repository_name)
+    except KeyError:
+        return list(scripts.keys())
+
+    scripts_file_path = os.path.join(repository["path"], ".omg/scripts.json")
+    if os.path.isfile(scripts_file_path):
+        try:
+            with open(scripts_file_path, "r") as f:
+                scripts.update(json.loads(f.read()))
+        except Exception:
+            pass
+
+    return list(scripts.keys())
+
+
+# retrieve the command for a given script name (local takes priority over global)
+def get_script_command(repository_name: str, script_name: str) -> str:
+    # repository-local scripts take priority
+    try:
+        repository = get_repository(repository_name)
+        scripts_file_path = os.path.join(repository["path"], ".omg/scripts.json")
+        if os.path.isfile(scripts_file_path):
+            with open(scripts_file_path, "r") as f:
+                scripts_dict = json.loads(f.read())
+                if script_name in scripts_dict:
+                    return scripts_dict[script_name]
+    except KeyError:
+        pass
+
+    # fall back to global scripts
+    if os.path.isfile(GLOBAL_SCRIPTS_PATH):
+        with open(GLOBAL_SCRIPTS_PATH, "r") as f:
+            scripts_dict = json.loads(f.read())
+            if script_name in scripts_dict:
+                return scripts_dict[script_name]
+
+    return None
+
+
+# add a script to a repository's local scripts file
+def add_script(repository_name: str, script_name: str, script_command: str) -> None:
+    repository = get_repository(repository_name)
+    scripts_dir = os.path.join(repository["path"], ".omg")
+    scripts_file_path = os.path.join(scripts_dir, "scripts.json")
+
+    if not os.path.isdir(scripts_dir):
+        os.makedirs(scripts_dir)
+
+    if os.path.isfile(scripts_file_path):
+        with open(scripts_file_path, "r") as f:
+            scripts_dict = json.loads(f.read())
+    else:
+        scripts_dict = {}
+
+    scripts_dict[script_name] = script_command
+
+    with open(scripts_file_path, "w") as f:
+        f.write(json.dumps(scripts_dict, indent=4))
+
+
+# remove a script from a repository's local scripts file
+def remove_script(repository_name: str, script_name: str) -> bool:
+    repository = get_repository(repository_name)
+    scripts_file_path = os.path.join(repository["path"], ".omg/scripts.json")
+
+    if not os.path.isfile(scripts_file_path):
+        return False
+
+    with open(scripts_file_path, "r") as f:
+        scripts_dict = json.loads(f.read())
+
+    if script_name not in scripts_dict:
+        return False
+
+    del scripts_dict[script_name]
+
+    with open(scripts_file_path, "w") as f:
+        f.write(json.dumps(scripts_dict, indent=4))
+
+    return True
+
+
+# add a global script available for every repository
+def add_global_script(script_name: str, script_command: str) -> None:
+    if not os.path.isfile(GLOBAL_SCRIPTS_PATH):
+        scripts_dict = {}
+    else:
+        with open(GLOBAL_SCRIPTS_PATH, "r") as f:
+            scripts_dict = json.loads(f.read())
+
+    scripts_dict[script_name] = script_command
+
+    with open(GLOBAL_SCRIPTS_PATH, "w") as f:
+        f.write(json.dumps(scripts_dict, indent=4))
+
+
+# remove a global script
+def remove_global_script(script_name: str) -> bool:
+    if not os.path.isfile(GLOBAL_SCRIPTS_PATH):
+        return False
+
+    with open(GLOBAL_SCRIPTS_PATH, "r") as f:
+        scripts_dict = json.loads(f.read())
+
+    if script_name not in scripts_dict:
+        return False
+
+    del scripts_dict[script_name]
+
+    with open(GLOBAL_SCRIPTS_PATH, "w") as f:
+        f.write(json.dumps(scripts_dict, indent=4))
+
+    return True
