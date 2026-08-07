@@ -8,7 +8,7 @@ from typing import List
 import argparse
 import sys
 
-OPTIONS = ["run", "edit", "pull", "origin", "rename", "tag", "script", "help", "rm"]
+OPTIONS = ["run", "edit", "pull", "origin", "rename", "tag", "script", "readme", "rm"]
 
 
 def safe_addstr(stdscr, y, x, text, attr=curses.A_NORMAL):
@@ -57,7 +57,7 @@ def get_commits_status(repository_path: str) -> str:
 
 
 def draw_list_screen(stdscr, filtered_names, selected_idx, scroll_offset,
-                     search_query, search_mode):
+                     search_query, search_mode, tag_query, tag_mode):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
 
@@ -80,11 +80,20 @@ def draw_list_screen(stdscr, filtered_names, selected_idx, scroll_offset,
             stdscr.move(height - 1, len(search_query) + 1)
         except curses.error:
             pass
+    elif tag_mode:
+        curses.curs_set(1)
+        safe_addstr(stdscr, height - 1, 0, f":{tag_query}")
+        try:
+            stdscr.move(height - 1, len(tag_query) + 1)
+        except curses.error:
+            pass
     else:
         curses.curs_set(0)
-        status = f"{len(filtered_names)} repos | Up/Down: navigate | Enter: details | /: filter | q: quit"
+        status = f"{len(filtered_names)} repos | Up/Down: navigate | Enter: details | /: name filter | : tag filter | q: quit"
         if search_query:
-            status = f"Filter: '{search_query}' | " + status
+            status = f"Name: '{search_query}' | " + status
+        if tag_query:
+            status = f"Tags: '{tag_query}' | " + status
         safe_addstr(stdscr, height - 1, 0, status)
 
     stdscr.refresh()
@@ -229,8 +238,8 @@ def call_option(stdscr, option, alias):
                     if global_mode:
                         args.append("-g")
                     call_module("script", args)
-        elif option == "help":
-            call_module("help", [])
+        elif option == "readme":
+            call_module("readme", [alias])
         elif option == "origin":
             call_module("origin", [alias, "-s"])
         elif option == "rm":
@@ -268,14 +277,25 @@ def tui_main(stdscr, repositories):
     selected_option = 0
     search_query = ""
     search_mode = False
+    tag_query = ""
+    tag_mode = False
     current_repo = None
 
     while True:
         repositories = omg.core.repositories.get_repositories()
 
         if screen == "list":
+            # filter by name
             filtered_names = [name for name in repositories.keys()
                               if search_query.lower() in name.lower()]
+
+            # filter by tags (repo must have ALL specified tags)
+            if tag_query:
+                wanted_tags = set(tag_query.split())
+                filtered_names = [
+                    name for name in filtered_names
+                    if wanted_tags <= set(repositories[name].get("tags") or [])
+                ]
 
             if not filtered_names:
                 selected_idx = 0
@@ -294,7 +314,7 @@ def tui_main(stdscr, repositories):
                 scroll_offset = selected_idx - max_display + 1
 
             draw_list_screen(stdscr, filtered_names, selected_idx, scroll_offset,
-                             search_query, search_mode)
+                             search_query, search_mode, tag_query, tag_mode)
 
             key = stdscr.getch()
 
@@ -308,6 +328,16 @@ def tui_main(stdscr, repositories):
                     search_query = ""
                 elif 32 <= key <= 126:
                     search_query += chr(key)
+            elif tag_mode:
+                if key in (curses.KEY_ENTER, 10, 13):
+                    tag_mode = False
+                elif key in (curses.KEY_BACKSPACE, 127, 8):
+                    tag_query = tag_query[:-1]
+                elif key == 27:  # Escape
+                    tag_mode = False
+                    tag_query = ""
+                elif 32 <= key <= 126:
+                    tag_query += chr(key)
             else:
                 if key == curses.KEY_UP:
                     selected_idx = max(0, selected_idx - 1)
@@ -316,8 +346,12 @@ def tui_main(stdscr, repositories):
                 elif key == ord('/'):
                     search_mode = True
                     search_query = ""
+                elif key == ord(':'):
+                    tag_mode = True
+                    tag_query = ""
                 elif key in (curses.KEY_BACKSPACE, 127, 8):
                     search_query = ""
+                    tag_query = ""
                 elif key in (curses.KEY_ENTER, 10, 13):
                     if filtered_names:
                         current_repo = filtered_names[selected_idx]
