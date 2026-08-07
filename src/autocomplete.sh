@@ -9,8 +9,8 @@
 # }
 
 function _omg {
-    local CURRENT_WORD=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=($(omg autocomplete $COMP_CWORD $COMP_WORDS))  
+    local CURRENT_WORD="${COMP_WORDS[COMP_CWORD]}"
+    COMPREPLY=($(compgen -W "$(omg autocomplete "$COMP_CWORD" "${COMP_WORDS[@]}")" -- "$CURRENT_WORD"))
 }
 
 
