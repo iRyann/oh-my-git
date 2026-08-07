@@ -5,7 +5,7 @@ import argparse
 import sys
 
 # modules that accept repository aliases as positional arguments
-REPOSITORY_MODULES = {"cd", "commit", "edit", "origin", "icon", "rm", "pull", "run", "legacy"}
+REPOSITORY_MODULES = {"cd", "commit", "edit", "origin", "icon", "rm", "pull", "run", "legacy", "rename", "tag"}
 # modules that accept multiple repository aliases (completion beyond the 2nd word)
 MULTI_REPOSITORY_MODULES = {"rm", "pull"}
 
