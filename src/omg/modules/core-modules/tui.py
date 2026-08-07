@@ -178,6 +178,7 @@ def select_script(stdscr, alias: str) -> str:
 def call_option(stdscr, option, alias):
     curses.def_prog_mode()
     curses.endwin()
+    should_exit = True
 
     try:
         if option == "rename":
@@ -202,24 +203,14 @@ def call_option(stdscr, option, alias):
         elif option == "run":
             script = select_script(stdscr, alias)
             if script:
-                curses.def_prog_mode()
-                curses.endwin()
                 try:
                     call_module("run", [alias, script])
                 except SystemExit:
                     pass
                 except Exception as e:
                     print(f"Error: {e}")
-                try:
-                    input("\nPress Enter to continue...")
-                except EOFError:
-                    pass
-                curses.reset_prog_mode()
-                stdscr.keypad(True)
-                curses.curs_set(0)
-                stdscr.clear()
-                stdscr.refresh()
-                return
+            else:
+                should_exit = False
         elif option == "script":
             action = input("Action: (a)dd [default], (r)emove: ").strip().lower()
             global_mode = input("Global script? (y/N): ").strip().lower() == 'y'
@@ -241,7 +232,7 @@ def call_option(stdscr, option, alias):
         elif option == "readme":
             call_module("readme", [alias])
         elif option == "origin":
-            call_module("origin", [alias, "-s"])
+            call_module("origin", [alias])
         elif option == "rm":
             confirm = input(f"Remove '{alias}' from omg? (y/N): ").strip().lower()
             if confirm == 'y':
@@ -253,16 +244,20 @@ def call_option(stdscr, option, alias):
     except Exception as e:
         print(f"Error: {e}")
 
-    try:
-        input("\nPress Enter to continue...")
-    except EOFError:
-        pass
+    if should_exit:
+        curses.reset_prog_mode()
+        stdscr.keypad(True)
+        curses.curs_set(0)
+        stdscr.clear()
+        stdscr.refresh()
+        return True
 
     curses.reset_prog_mode()
     stdscr.keypad(True)
     curses.curs_set(0)
     stdscr.clear()
     stdscr.refresh()
+    return False
 
 
 def tui_main(stdscr, repositories):
@@ -376,7 +371,9 @@ def tui_main(stdscr, repositories):
                 selected_option = min(len(OPTIONS) - 1, selected_option + 1)
             elif key in (curses.KEY_ENTER, 10, 13):
                 option = OPTIONS[selected_option]
-                call_option(stdscr, option, current_repo)
+                should_exit = call_option(stdscr, option, current_repo)
+                if should_exit:
+                    break
                 repositories = omg.core.repositories.get_repositories()
                 if current_repo not in repositories:
                     screen = "list"
